@@ -11,4 +11,9 @@ static formatar(valor: number): string {
         })
 }
 
+static desformatar(valor: string): number {
+    return Number(valor.replace(/\D/g, '')) / 100
+
+}
+
 }
