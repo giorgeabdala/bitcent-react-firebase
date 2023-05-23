@@ -4,7 +4,7 @@ interface MiniFormularioProps {
     titulo: string
     children: any
     msgRodaPe: string
-    textoBotao: string
+    textoBotao?: string
     salvar: () => void
     podeSalvar: boolean
     descricao: string
@@ -32,7 +32,7 @@ export default function MiniFormulario(props: MiniFormularioProps) {
             <span className="hidden sm:inline text-zinc-400">{props.msgRodaPe}</span>
             <Button 
                 color={props.podeSalvar ? "green" : "gray"}
-                className={props.podeSalvar ?  "bg-green-500" : "bg-gray-600" }
+                className={props.podeSalvar ?  "bg-green-500" : "bg-gray-800" }
                 onClick={() => props.podeSalvar ? props.salvar() : null } >
                     Salvar
             </Button>

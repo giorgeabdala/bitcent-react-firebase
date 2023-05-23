@@ -2,7 +2,7 @@ import Cabecalho from "@/components/template/Cabecalho";
 import Conteudo from "@/components/template/Conteudo";
 import Pagina from "@/components/template/Pagina";
 import TituloPagina from "@/components/template/tituloPagina";
-import Formularios from "@/components/usuario/Formulario";
+import Formularios from "@/components/usuario/Formularios";
 import usuarioFalso from "@/data/constants/usuarioFalso";
 import { IconForms } from "@tabler/icons-react";
 
