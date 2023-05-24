@@ -1,4 +1,5 @@
 import AutenticacaoContext from "@/data/contexts/AutenticacaoContext";
+import useFormulario from "@/data/hooks/UseFormulario";
 import Usuario from "@/logic/core/usuario/Usuario";
 import Cpf from "@/logic/utils/Cpf";
 import Telefone from "@/logic/utils/Telefone";
@@ -61,8 +62,4 @@ export default function Formularios() {
             </MiniFormulario>
         </div>
     )
-}
-
-function useFormulario<T>(): { dados: any; alterarAtributo: any; alterarDados: any; } {
-    throw new Error("Function not implemented.");
 }
