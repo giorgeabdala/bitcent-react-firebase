@@ -1,69 +1,73 @@
-
-import { Button } from "@mantine/core"
-import Cabecalho from "../template/Cabecalho"
-import Conteudo from "../template/Conteudo"
-import Pagina from "../template/Pagina"
-import Lista from "./Lista"
-import Transacao, { transacaoVazia } from "@/logic/core/financas/Transacao"
-import { useState } from "react"
-import transacoesFalsas from "@/data/constants/transacoesFalsas"
-import Formulario from "./Formulario"
-import NaoEncontrado from "../template/NaoEncontrado"
-import Id from "@/logic/core/usuario/comum/Id"
-import { IconPlus } from "@tabler/icons-react"
-
+import useTransacao, { TipoExibicao } from "@/data/hooks/useTransacao";
+import { transacaoVazia } from "@/logic/core/financas/Transacao";
+import { Button, SegmentedControl } from "@mantine/core";
+import { IconLayoutGrid, IconList, IconPlus } from "@tabler/icons-react";
+import Cabecalho from "../template/Cabecalho";
+import CampoMesAno from "../template/CampoMesAno";
+import Conteudo from "../template/Conteudo";
+import NaoEncontrado from "../template/NaoEncontrado";
+import Pagina from "../template/Pagina";
+import Formulario from "./Formulario";
+import Grade from "./Grade";
+import Lista from "./Lista";
 
 export default function Financas() {
-    const [transacoes, setTransacoes] = useState<Transacao[]>(transacoesFalsas)
-    const [transacao, setTransacao] = useState<Transacao | null>(null)
+    const {
+        data, alterarData, alterarExibicao, tipoExibicao,
+        transacoes, transacao, selecionar, salvar, excluir
+    } = useTransacao()
 
-    function salvar(transacao: Transacao) {
-        const outrasTransacoes = transacoes.filter(t => t.id !== transacao.id)
-        setTransacoes([...outrasTransacoes, {
-            ...transacao,
-            id: transacao.id ?? Id.novo()
-        }])
-        setTransacao(null)
- }
-
-    function excluir(transacao: Transacao) {
-        const outrasTransacoes = transacoes.filter(t => t.id !== transacao.id)
-        setTransacoes(outrasTransacoes)
-        setTransacao(null)
-
+    function renderizarControles() {
+        return (
+            <div className="flex justify-between">
+                <CampoMesAno
+                    data={data}
+                    dataMudou={alterarData}
+                />
+                <div className="flex gap-5">
+                    <Button
+                        className="bg-blue-500"
+                        leftIcon={<IconPlus />}
+                        onClick={() => selecionar(transacaoVazia)}
+                    >Nova transação</Button>
+                    <SegmentedControl
+                        data={[
+                            { label: <IconList />, value: 'lista' },
+                            { label: <IconLayoutGrid />, value: 'grade' }
+                        ]}
+                        onChange={tipo => alterarExibicao(tipo as TipoExibicao)}
+                    />
+                </div>
+            </div>
+        )
     }
 
-    
+    function renderizarTransacoes() {
+        const props = { transacoes, selecionarTransacao: selecionar }
+        return tipoExibicao === 'lista' 
+            ? <Lista {...props} />
+            : <Grade {...props} />
+    }
+
     return (
         <Pagina>
             <Cabecalho />
             <Conteudo className="gap-5">
-                <Button
-                    className="bg-blue-500 "
-                    leftIcon={<IconPlus />}
-                    onClick={() => setTransacao(transacaoVazia)}
-                > Nova Transação  
-                </Button>
-
-
-                {transacao  ? (
-                    <Formulario 
+                {renderizarControles()}
+                {transacao ? (
+                    <Formulario
                         transacao={transacao}
                         salvar={salvar}
                         excluir={excluir}
-                        cancelar={() => setTransacao(null)}
-                        />
-                ) : transacoes.length ? (
-                    <Lista 
-                    transacoes={transacoes} 
-                    selecionarTransacao={setTransacao} 
+                        cancelar={() => selecionar(null)}
                     />
+                ) : transacoes.length ? (
+                    renderizarTransacoes()
                 ) : (
                     <NaoEncontrado>
-                        Nenhuma transacao encontrada
+                        Nenhuma transação encontrada
                     </NaoEncontrado>
-                )
-            }
+                )}
             </Conteudo>
         </Pagina>
     )

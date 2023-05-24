@@ -1,8 +1,11 @@
-import AutenticacaoContext from "@/data/contexts/AutenticacaoContext";
+// https://unicode-table.com/en/1F44B/
+
+import AutenticacaoContext from "@/data/contexts/AutenticacaoContext"
 import { useContext } from "react"
 
- export default function BoasVindas() {
-    const {usuario} = useContext(AutenticacaoContext);
+export default function BoasVindas() {
+
+    const { usuario } = useContext(AutenticacaoContext)
 
     function renderizarNome() {
         return (
@@ -13,8 +16,8 @@ import { useContext } from "react"
     }
 
     return (
-        <div className="text-3xl font-black">
+        <div className={`text-3xl font-black`}>
             Olá {renderizarNome()} 👋
         </div>
     )
- }
+}

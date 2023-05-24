@@ -1,60 +1,66 @@
-import Usuario from "@/logic/core/usuario/Usuario";
-import Autenticacao from "@/logic/firebase/auth/Autenticacao";
-import { createContext, use, useEffect, useState } from "react";
+import servicos from "@/logic/core"
+import Usuario from "@/logic/core/usuario/Usuario"
+import { createContext, useEffect, useState } from "react"
 
-
-
-interface AutenticacaoProps {   
-    carregando: boolean;
-    usuario: Usuario | null;
-    loginGoogle: () => Promise<Usuario | null>;
-    logout: () => Promise<void>;
+interface AutenticacaoProps {
+    carregando: boolean
+    usuario: Usuario | null
+    loginGoogle: () => Promise<Usuario | null>
+    logout: () => Promise<void>
+    atualizarUsuario: (novoUsuario: Usuario) => Promise<void>
 }
 
-const AutenticacaoContext = createContext<AutenticacaoProps> ({
+const AutenticacaoContext = createContext<AutenticacaoProps>({
     carregando: true,
     usuario: null,
     loginGoogle: async () => null,
-    logout: async () => {}
+    logout: async () => {},
+    atualizarUsuario: async () => {}
 })
 
 export function AutenticacaoProvider(props: any) {
 
-    const [carregando, setCarregando] = useState(true);
-    const [usuario, setUsuario] = useState<Usuario | null>(null);
-
-    const autenticacao = new Autenticacao();
+    const [carregando, setCarregando] = useState<boolean>(true)
+    const [usuario, setUsuario] = useState<Usuario | null>(null)
 
     useEffect(() => {
-        const cancelar = autenticacao.monitorar(async (usuario) => {
-            setUsuario(usuario);
-            setCarregando(false);
+        const cancelar = servicos.usuario.monitorarAutenticacao((usuario) => {
+            setUsuario(usuario)
+            setCarregando(false)
         })
-        return () => cancelar();
-    }, []) ;
+        return () => cancelar()
+    }, [])
+
+    async function atualizarUsuario(novoUsuario: Usuario) {
+        if (usuario && usuario.email !== novoUsuario.email) return logout()
+        if (usuario && novoUsuario && usuario.email === novoUsuario.email) {
+            await servicos.usuario.salvar(novoUsuario)
+            setUsuario(novoUsuario)
+        }
+    }
 
     async function loginGoogle() {
-        const usuario = await autenticacao.loginGoogle();
-        setUsuario(usuario);
-        return usuario;
+        const usuario = await servicos.usuario.loginGoogle()
+        setUsuario(usuario) 
+        return usuario
     }
 
     async function logout() {
-        await autenticacao.logout();  
-        setUsuario(null);
+        await servicos.usuario.logout()
+        setUsuario(null)
     }
 
-
-     return (
+    return (
         <AutenticacaoContext.Provider value={{
             carregando,
             usuario,
             loginGoogle,
-            logout
+            logout,
+            atualizarUsuario
         }}>
             {props.children}
         </AutenticacaoContext.Provider>
-     )
+    )
 }
 
-export default AutenticacaoContext;
+export default AutenticacaoContext

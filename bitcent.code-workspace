@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../Downloads/cursos/transformacaoDev/bitcent-main"
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "bitcent/node_modules/typescript/lib"
+	}
+}
