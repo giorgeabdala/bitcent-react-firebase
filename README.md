@@ -1,4 +1,4 @@
-This is a study and learning project with React, typescript, next and Firebase.
+This is a study and learning project with React, typescript, NextJs and Firebase.
 It's a project presentation landing page and another app to control financial transactions, with different calendar and views. It also presents a screen for handling user data.
 Authentication and backend is performed with firebase.
 The app is 100% responsive.
